@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table View with Sort and Pagination</title>
+    <style>
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+        .pagination button.active {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Table View with Sort and Pagination</h2>
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">Column 1</th>
+                <th onclick="sortTable(1)">Column 2</th>
+                <th onclick="sortTable(2)">Column 3</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Table rows will be dynamically generated here -->
+        </tbody>
+    </table>
+
+    <div class="pagination" id="pagination">
+        <!-- Pagination buttons will be dynamically generated here -->
+    </div>
+
+    <script>
+        let data = [
+            { col1: 'Row 1, Cell 1', col2: 'Row 1, Cell 2', col3: 'Row 1, Cell 3' },
+            { col1: 'Row 2, Cell 1', col2: 'Row 2, Cell 2', col3: 'Row 2, Cell 3' },
+            { col1: 'Row 3, Cell 1', col2: 'Row 3, Cell 2', col3: 'Row 3, Cell 3' },
+            { col1: 'Row 4, Cell 1', col2: 'Row 4, Cell 2', col3: 'Row 4, Cell 3' },
+            { col1: 'Row 5, Cell 1', col2: 'Row 5, Cell 2', col3: 'Row 5, Cell 3' },
+            { col1: 'Row 6, Cell 1', col2: 'Row 6, Cell 2', col3: 'Row 6, Cell 3' },
+            { col1: 'Row 7, Cell 1', col2: 'Row 7, Cell 2', col3: 'Row 7, Cell 3' },
+            { col1: 'Row 8, Cell 1', col2: 'Row 8, Cell 2', col3: 'Row 8, Cell 3' },
+            { col1: 'Row 9, Cell 1', col2: 'Row 9, Cell 2', col3: 'Row 9, Cell 3' },
+            { col1: 'Row 10, Cell 1', col2: 'Row 10, Cell 2', col3: 'Row 10, Cell 3' }
+        ];
+
+        const itemsPerPage = 3;
+        let currentPage = 1;
+
+        function generateTable(page) {
+            let startIndex = (page - 1) * itemsPerPage;
+            let endIndex = startIndex + itemsPerPage;
+            let paginatedData = data.slice(startIndex, endIndex);
+
+            let tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            paginatedData.forEach(item => {
+                let row = document.createElement('tr');
+                row.innerHTML = `<td>${item.col1}</td><td>${item.col2}</td><td>${item.col3}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function generatePagination() {
+            let totalPages = Math.ceil(data.length / itemsPerPage);
+            let pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                let button = document.createElement('button');
+                button.textContent = i;
+                button.addEventListener('click', function () {
+                    currentPage = i;
+                    generateTable(currentPage);
+                    updatePaginationButtons();
+                });
+                if (i === currentPage) {
+                    button.classList.add('active');
+                }
+                pagination.appendChild(button);
+            }
+        }
+
+        function updatePaginationButtons() {
+            let buttons = document.querySelectorAll('.pagination button');
+            buttons.forEach((button, index) => {
+                if (index + 1 === currentPage) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        function sortTable(columnIndex) {
+            data.sort((a, b) => {
+                let valA = a[`col${columnIndex + 1}`];
+                let valB = b[`col${columnIndex + 1}`];
+                if (valA < valB) {
+                    return -1;
+                }
+                if (valA > valB) {
+                    return 1;
+                }
+                return 0;
+            });
+            generateTable(currentPage);
+            generatePagination();
+        }
+        generateTable(currentPage);
+        generatePagination();
+    </script>
+</body>
+</html>

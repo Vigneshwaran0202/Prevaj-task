@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Infinite Slider with Arrow Buttons</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .slider {
+            width: 80%;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slide {
+            min-width: 100%;
+            flex: 0 0 auto;
+        }
+        .slide img {
+            width: 100%;
+        }
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            z-index: 1;
+        }
+        .arrow.left {
+            left: 10px;
+        }
+        .arrow.right {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slider">
+        <div class="slides">
+            <div class="slide"><img src="butterfly.jpg" alt="Slide 1"></div>
+            <div class="slide"><img src="image2.jpg" alt="Slide 2"></div>
+            <div class="slide"><img src="image3.jpg" alt="Slide 3"></div>
+            <!-- Add more slides as needed -->
+        </div>
+        <div class="arrow left" onclick="moveSlide(-1)">❮</div>
+        <div class="arrow right" onclick="moveSlide(1)">❯</div>
+    </div>
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function moveSlide(direction) {
+            slideIndex = (slideIndex + direction + totalSlides) % totalSlides;
+            updateSlides();
+        }
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                let slidePosition = (index - slideIndex + totalSlides) % totalSlides;
+                slide.style.left = `${slidePosition * 100}%`;
+            });
+        }
+
+        updateSlides(); 
+    </script>
+</body>
+</html>
